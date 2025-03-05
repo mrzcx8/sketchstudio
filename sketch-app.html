@@ -1,0 +1,2854 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Melakar Lanjutan</title>
+            <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary-color: #4CAF50;
+            --primary-dark: #3e8e41;
+            --danger-color: #f44336;
+            --danger-dark: #d32f2f;
+            --info-color: #2196F3;
+            --info-dark: #0b7dda;
+            --warning-color: #FFC107;
+            --warning-dark: #e6ac00;
+            --purple-color: #9C27B0;
+            --purple-dark: #7B1FA2;
+            --bg-light: #f5f5f5;
+            --bg-dark: #333;
+            --text-light: #f5f5f5;
+            --text-dark: #333;
+        }
+        
+        /* Gaya tambahan untuk fitur baharu */
+        .input-field {
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            font-size: 14px;
+        }
+        
+        .select-field {
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            font-size: 14px;
+            background-color: white;
+        }
+        
+        body.dark-mode .input-field,
+        body.dark-mode .select-field {
+            background-color: #444;
+            border-color: #666;
+            color: #f1f1f1;
+        }
+        
+        .performance-stats {
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        body.dark-mode .performance-stats {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Modal presentasi */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 80%;
+            max-height: 80%;
+            overflow: auto;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        body.dark-mode .modal-content {
+            background-color: #444;
+            color: #f1f1f1;
+        }
+        
+        .slideshow-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .template-preview {
+            width: 80px;
+            height: 60px;
+            background-color: #f1f1f1;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s;
+            margin-right: 10px;
+        }
+        
+        .template-preview:hover {
+            transform: scale(1.05);
+        }
+        
+        .template-preview.active {
+            border-color: var(--primary-color);
+        }
+        
+        body.dark-mode .template-preview {
+            background-color: #555;
+        }
+        
+        /* Watermark */
+        .watermark-preview {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(0, 0, 0, 0.3);
+            font-size: 16px;
+            pointer-events: none;
+            user-select: none;
+            z-index: 5;
+        }
+        
+        /* Social media templates */
+        .template-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+        }
+        
+        body {
+            background-color: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        body.dark-mode {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        h1 {
+            color: var(--text-dark);
+            margin: 10px 0;
+        }
+        
+        body.dark-mode h1 {
+            color: var(--text-light);
+        }
+        
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .tools-container {
+            flex: 1;
+            min-width: 250px;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        body.dark-mode .tools-container {
+            background: #444;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+        
+        .canvas-area {
+            flex: 3;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .canvas-container {
+            position: relative;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            min-height: 400px; /* Tetapkan ketinggian minimum */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        body.dark-mode .canvas-container {
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+        
+        .canvas-wrapper {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .canvas-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        
+        #background-canvas {
+            background-color: white;
+            z-index: 0;
+        }
+        
+        #drawing-canvas {
+            z-index: 1;
+            cursor: crosshair;
+            pointer-events: auto;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        body.dark-mode .section-title {
+            color: var(--text-light);
+            border-bottom: 1px solid #666;
+        }
+        
+        .tool-section {
+            margin-bottom: 10px;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .control-label {
+            font-weight: bold;
+            color: #555;
+            min-width: 60px;
+        }
+        
+        body.dark-mode .control-label {
+            color: #ddd;
+        }
+        
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s, transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn:active {
+            transform: scale(0.97);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: var(--danger-dark);
+        }
+        
+        .btn-info {
+            background-color: var(--info-color);
+        }
+        
+        .btn-info:hover {
+            background-color: var(--info-dark);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+        }
+        
+        .btn-warning:hover {
+            background-color: var(--warning-dark);
+        }
+        
+        .btn-purple {
+            background-color: var(--purple-color);
+        }
+        
+        .btn-purple:hover {
+            background-color: var(--purple-dark);
+        }
+        
+        .tool-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            background-color: #f1f1f1;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 18px;
+            border: 2px solid transparent;
+        }
+        
+        body.dark-mode .tool-icon {
+            background-color: #555;
+            color: #f1f1f1;
+        }
+        
+        .tool-icon:hover {
+            background-color: #e0e0e0;
+        }
+        
+        body.dark-mode .tool-icon:hover {
+            background-color: #666;
+        }
+        
+        .tool-icon.active {
+            border-color: var(--primary-color);
+            background-color: #e0e0e0;
+        }
+        
+        body.dark-mode .tool-icon.active {
+            border-color: var(--primary-color);
+            background-color: #666;
+        }
+        
+        .color-picker {
+            width: 35px;
+            height: 35px;
+            padding: 0;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        body.dark-mode .color-picker {
+            border-color: #777;
+        }
+        
+        .color-preset {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #ccc;
+            transition: transform 0.2s;
+        }
+        
+        .color-preset:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-preset.active {
+            border-color: black;
+        }
+        
+        body.dark-mode .color-preset.active {
+            border-color: white;
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .size-slider,
+        .opacity-slider {
+            flex: 1;
+            cursor: pointer;
+        }
+        
+        .size-display,
+        .opacity-display {
+            min-width: 35px;
+            text-align: center;
+            background-color: #eee;
+            border-radius: 3px;
+            padding: 2px 5px;
+        }
+        
+        body.dark-mode .size-display,
+        body.dark-mode .opacity-display {
+            background-color: #666;
+            color: white;
+        }
+        
+        .layers-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 5px;
+        }
+        
+        .layer-item {
+            display: flex;
+            align-items: center;
+            background-color: #f1f1f1;
+            padding: 5px;
+            border-radius: 4px;
+            gap: 5px;
+        }
+        
+        body.dark-mode .layer-item {
+            background-color: #555;
+        }
+        
+        .layer-visibility {
+            cursor: pointer;
+        }
+        
+        .layer-name {
+            flex: 1;
+            font-size: 12px;
+        }
+        
+        .layer-opacity {
+            width: 60px;
+            height: 4px;
+        }
+        
+        .preset-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .background-preset {
+            width: 60px;
+            height: 40px;
+            border-radius: 4px;
+            cursor: pointer;
+            background-size: cover;
+            border: 2px solid transparent;
+            transition: transform 0.2s;
+        }
+        
+        .background-preset:hover {
+            transform: scale(1.05);
+        }
+        
+        .background-preset.active {
+            border-color: var(--primary-color);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        
+        body.dark-mode .dropdown-content {
+            background-color: #444;
+        }
+        
+        .dropdown-item {
+            padding: 8px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f1f1f1;
+        }
+        
+        body.dark-mode .dropdown-item:hover {
+            background-color: #555;
+        }
+        
+        .filter-preview {
+            width: 70px;
+            height: 50px;
+            background-size: cover;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            border: 2px solid transparent;
+        }
+        
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .filter-item.active .filter-preview {
+            border-color: var(--primary-color);
+        }
+        
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .brush-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            background-color: #f1f1f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        body.dark-mode .brush-preview {
+            background-color: #555;
+        }
+        
+        .brush-preview.active {
+            border-color: var(--primary-color);
+        }
+        
+        .brush-dot {
+            background-color: black;
+            border-radius: 50%;
+        }
+        
+        body.dark-mode .brush-dot {
+            background-color: white;
+        }
+        
+        .brush-square {
+            background-color: black;
+        }
+        
+        body.dark-mode .brush-square {
+            background-color: white;
+        }
+        
+        .theme-toggle {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: #555;
+            transition: color 0.3s;
+        }
+        
+        body.dark-mode .theme-toggle {
+            color: #f1f1f1;
+        }
+        
+        .grid-toggle {
+            width: 35px;
+            height: 20px;
+            background-color: #ccc;
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .grid-toggle::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: white;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+        
+        .grid-toggle.active {
+            background-color: var(--primary-color);
+        }
+        
+        .grid-toggle.active::after {
+            left: 17px;
+        }
+        
+        .canvas-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .canvas-grid.visible {
+            opacity: 0.3;
+        }
+        
+        .history-container {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .history-thumbnail {
+            width: 40px;
+            height: 30px;
+            background-color: #f1f1f1;
+            border-radius: 3px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            background-size: cover;
+        }
+        
+        body.dark-mode .history-thumbnail {
+            background-color: #555;
+        }
+        
+        .history-thumbnail.active {
+            border-color: var(--primary-color);
+        }
+        
+        .eye-dropper {
+            cursor: crosshair;
+        }
+        
+        /* Responsif */
+        @media (max-width: 950px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .tools-container {
+                max-height: none;
+                overflow-y: visible;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                justify-content: center;
+            }
+            
+            .control-group {
+                justify-content: center;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .tools-container {
+                padding: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .btn {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            
+            .color-picker, .tool-icon {
+                width: 30px;
+                height: 30px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .control-label {
+                min-width: 50px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Aplikasi Melakar Lanjutan</h1>
+            <div class="controls">
+                <button id="undo-button" class="btn btn-info tooltip">
+                    ↩️
+                    <span class="tooltip-text">Batal (Ctrl+Z)</span>
+                </button>
+                <button id="redo-button" class="btn btn-info tooltip">
+                    ↪️
+                    <span class="tooltip-text">Buat Semula (Ctrl+Y)</span>
+                </button>
+                <button id="save-button" class="btn btn-info tooltip">
+                    💾
+                    <span class="tooltip-text">Simpan</span>
+                </button>
+                <div class="dropdown">
+                    <button id="export-dropdown" class="btn btn-purple tooltip">
+                        📤
+                        <span class="tooltip-text">Eksport</span>
+                    </button>
+                    <div id="export-options" class="dropdown-content">
+                        <div id="export-png" class="dropdown-item">PNG</div>
+                        <div id="export-jpeg" class="dropdown-item">JPEG</div>
+                        <div id="export-svg" class="dropdown-item">SVG</div>
+                        <div id="export-high-res" class="dropdown-item">Resolusi Tinggi</div>
+                        <div id="export-watermark" class="dropdown-item">Dengan Watermark</div>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button id="template-dropdown" class="btn btn-info tooltip">
+                        📱
+                        <span class="tooltip-text">Templat Media Sosial</span>
+                    </button>
+                    <div id="template-options" class="dropdown-content">
+                        <div id="template-instagram" class="dropdown-item">Instagram Post (1080x1080)</div>
+                        <div id="template-facebook" class="dropdown-item">Facebook Post (1200x630)</div>
+                        <div id="template-twitter" class="dropdown-item">Twitter (1200x675)</div>
+                        <div id="template-youtube" class="dropdown-item">YouTube Thumbnail (1280x720)</div>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button id="presentation-dropdown" class="btn btn-warning tooltip">
+                        🎭
+                        <span class="tooltip-text">Mod Presentasi</span>
+                    </button>
+                    <div id="presentation-options" class="dropdown-content">
+                        <div id="presentation-start" class="dropdown-item">Mula Rakaman Langkah</div>
+                        <div id="presentation-playback" class="dropdown-item">Main Semula Rakaman</div>
+                        <div id="presentation-slideshow" class="dropdown-item">Mod Paparan Slaid</div>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button id="import-dropdown" class="btn btn-danger tooltip">
+                        📂
+                        <span class="tooltip-text">Import</span>
+                    </button>
+                    <div id="import-options" class="dropdown-content">
+                        <div id="import-svg" class="dropdown-item">Import SVG</div>
+                        <div id="import-psd" class="dropdown-item">Import PSD (Lapisan)</div>
+                        <div id="import-image-colors" class="dropdown-item">Ekstrak Warna Dari Imej</div>
+                    </div>
+                </div>
+                <button id="performance-toggle" class="btn tooltip">
+                    ⚡
+                    <span class="tooltip-text">Mod Prestasi</span>
+                </button>
+                <button id="theme-toggle" class="theme-toggle tooltip">
+                    ☀️
+                    <span class="tooltip-text">Tukar Tema</span>
+                </button>
+            </div>
+        </header>
+        
+        <div class="main-container">
+            <div class="tools-container">
+                <div class="tool-section">
+                    <div class="section-title">Alat Melukis</div>
+                    <div class="controls">
+                        <div id="brush-tool" class="tool-icon active tooltip">
+                            🖌️
+                            <span class="tooltip-text">Berus (B)</span>
+                        </div>
+                        <div id="eraser-tool" class="tool-icon tooltip">
+                            🧹
+                            <span class="tooltip-text">Pemadam (E)</span>
+                        </div>
+                        <div id="eyedropper-tool" class="tool-icon tooltip">
+                            👁️
+                            <span class="tooltip-text">Pengambil Warna (I)</span>
+                        </div>
+                        <div id="fill-tool" class="tool-icon tooltip">
+                            🪣
+                            <span class="tooltip-text">Isi (G)</span>
+                        </div>
+                        <div id="text-tool" class="tool-icon tooltip">
+                            🔠
+                            <span class="tooltip-text">Teks (T)</span>
+                        </div>
+                        <div id="line-tool" class="tool-icon tooltip">
+                            ⁄
+                            <span class="tooltip-text">Garisan (L)</span>
+                        </div>
+                        <div id="rectangle-tool" class="tool-icon tooltip">
+                            □
+                            <span class="tooltip-text">Segiempat (R)</span>
+                        </div>
+                        <div id="circle-tool" class="tool-icon tooltip">
+                            ○
+                            <span class="tooltip-text">Bulatan (C)</span>
+                        </div>
+                        <div id="triangle-tool" class="tool-icon tooltip">
+                            △
+                            <span class="tooltip-text">Segitiga (Y)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tool-section">
+                    <div class="section-title">Jenis Berus</div>
+                    <div class="controls">
+                        <div id="brush-normal" class="brush-preview active">
+                            <div class="brush-dot" style="width: 15px; height: 15px;"></div>
+                        </div>
+                        <div id="brush-square" class="brush-preview">
+                            <div class="brush-square" style="width: 15px; height: 15px;"></div>
+                        </div>
+                        <div id="brush-soft" class="brush-preview">
+                            <div class="brush-dot" style="width: 18px; height: 18px; opacity: 0.6;"></div>
+                        </div>
+                        <div id="brush-spray" class="brush-preview">
+                            <div style="width: 20px; height: 20px; position: relative;">
+                                <div class="brush-dot" style="position: absolute; width: 4px; height: 4px; top: 5px; left: 10px;"></div>
+                                <div class="brush-dot" style="position: absolute; width: 3px; height: 3px; top: 12px; left: 4px;"></div>
+                                <div class="brush-dot" style="position: absolute; width: 3px; height: 3px; top: 10px; left: 15px;"></div>
+                                <div class="brush-dot" style="position: absolute; width: 2px; height: 2px; top: 15px; left: 12px;"></div>
+                                <div class="brush-dot" style="position: absolute; width: 2px; height: 2px; top: 8px; left: 8px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tool-section">
+                    <div class="section-title">Warna</div>
+                    <div class="control-group">
+                        <span class="control-label">Pilih:</span>
+                        <input type="color" id="color-picker" class="color-picker" value="#000000">
+                    </div>
+                    
+                    <div class="preset-container">
+                        <div class="color-preset active" style="background-color: #000000;" data-color="#000000"></div>
+                        <div class="color-preset" style="background-color: #FFFFFF;" data-color="#FFFFFF"></div>
+                        <div class="color-preset" style="background-color: #FF0000;" data-color="#FF0000"></div>
+                        <div class="color-preset" style="background-color: #00FF00;" data-color="#00FF00"></div>
+                        <div class="color-preset" style="background-color: #0000FF;" data-color="#0000FF"></div>
+                        <div class="color-preset" style="background-color: #FFFF00;" data-color="#FFFF00"></div>
+                        <div class="color-preset" style="background-color: #FF00FF;" data-color="#FF00FF"></div>
+                        <div class="color-preset" style="background-color: #00FFFF;" data-color="#00FFFF"></div>
+                    </div>
+                </div>
+                
+                <div class="tool-section">
+                    <div class="section-title">Saiz & Ketelusan</div>
+                    <div class="slider-container">
+                        <span class="control-label">Saiz:</span>
+                        <input type="range" id="size-slider" class="size-slider" min="1" max="50" value="5">
+                        <span id="size-display" class="size-display">5px</span>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <span class="control-label">Ketelusan:</span>
+                        <input type="range" id="opacity-slider" class="opacity-slider" min="1" max="100" value="100">
+                        <span id="opacity-display" class="opacity-display">100%</span>
+                    </div>
+                </div>
+                
+                <div class="tool-section">
+                    <div class="section-title">Lapisan</div>
+                    <div class="controls">
+                        <button id="add-layer-button" class="btn tooltip">
+                            ➕
+                            <span class="tooltip-text">Tambah Lapisan</span>
+                        </button>
+                        <button id="delete-layer-button" class="btn btn-danger tooltip">
+                            ➖
+                            <span class="tooltip-text">Padam Lapisan</span>
+                        </button>
+                        <button id="merge-layers-button" class="btn btn-warning tooltip">
+                            🔀
+                            <span class="tooltip-text">Gabung Lapisan</span>
+                        </button>
+                    </div>
+                    
+                    <div id="layers-list" class="layers-container">
+                        <div class="layer-item">
+                            <div class="layer-visibility">👁️</div>
+                            <div class="layer-name">Lapisan 1</div>
+                            <input type="range" class="layer-opacity" min="0" max="100" value="100">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tool-section">
+                    <div class="section-title">Latar Belakang</div>
+                    <div class="preset-container">
+                        <div class="background-preset active" style="background-color: white;" data-bg="white"></div>
+                        <div class="background-preset" style="background-color: #f0f0f0;" data-bg="#f0f0f0"></div>
+                        <div class="background-preset" style="background-color: #000000;" data-bg="#000000"></div>
+                        <div class="background-preset" style="background-image: url('/api/placeholder/60/40');" data-bg="grid"></div>
+                        <div class="background-preset" style="background-image: url('/api/placeholder/60/40');" data-bg="dots"></div>
+                    </div>
+                    
+                    <button id="upload-bg-button" class="btn">Muat Naik Latar</button>
+                    <input type="file" id="bg-upload" class="file-input" accept="image/*">
+                </div>
+                
+                <div class="tool-section">
+                    <div class="section-title">Penapis</div>
+                    <div class="preset-container">
+                        <div class="filter-item active">
+                            <div class="filter-preview" style="background-image: url('/api/placeholder/70/50');"></div>
+                            <span>Normal</span>
+                        </div>
+                        <div class="filter-item">
+                            <div class="filter-preview" style="background-image: url('/api/placeholder/70/50'); filter: grayscale(100%);"></div>
+                            <span>Grayscale</span>
+                        </div>
+                        <div class="filter-item">
+                            <div class="filter-preview" style="background-image: url('/api/placeholder/70/50'); filter: sepia(100%);"></div>
+                            <span>Sepia</span>
+                        </div>
+                        <div class="filter-item">
+                            <div class="filter-preview" style="background-image: url('/api/placeholder/70/50'); filter: blur(2px);"></div>
+                            <span>Blur</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tool-section">
+                    <div class="section-title">Pemudah</div>
+                    <div class="controls">
+                        <div class="control-group">
+                            <span class="control-label">Grid:</span>
+                            <div id="grid-toggle" class="grid-toggle"></div>
+                        </div>
+                        <button id="clear-canvas-button" class="btn btn-danger tooltip">
+                            🗑️
+                            <span class="tooltip-text">Padam Semua</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="tool-section">
+                    <div class="section-title">Watermark & Tandatangan</div>
+                    <div class="control-group">
+                        <input type="text" id="watermark-text" placeholder="Teks Watermark" class="input-field">
+                        <button id="add-watermark-button" class="btn btn-info">Tambah</button>
+                    </div>
+                    <div class="control-group">
+                        <button id="add-signature-button" class="btn">Tambah Tandatangan</button>
+                    </div>
+                </div>
+                
+                <div class="tool-section">
+                    <div class="section-title">Prestasi & Kualiti</div>
+                    <div class="control-group">
+                        <span class="control-label">Kualiti:</span>
+                        <select id="quality-setting" class="select-field">
+                            <option value="high">Tinggi (Terbaik)</option>
+                            <option value="medium" selected>Sederhana</option>
+                            <option value="low">Rendah (Pantasjt)</option>
+                        </select>
+                    </div>
+                    <div id="performance-stats" class="performance-stats">
+                        FPS: <span id="fps-counter">60</span> | 
+                        Saiz: <span id="memory-usage">0 MB</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="canvas-area">
+                <div class="canvas-container">
+                    <div class="canvas-wrapper">
+                        <canvas id="background-canvas" class="canvas-layer"></canvas>
+                        <canvas id="drawing-canvas" class="canvas-layer"></canvas>
+                        <div id="canvas-grid" class="canvas-grid"></div>
+                    </div>
+                    <!-- Mesej ralat jika kanvas tidak kelihatan -->
+                    <div id="canvas-error" style="display: none; color: red; text-align: center; padding: 20px;">
+                        Ralat: Kanvas tidak dapat dipaparkan. Sila refresh halaman atau cuba browser lain.
+                    </div>
+                </div>
+                
+                <div class="history-container" id="history-container">
+                    <!-- Sejarah tindakan akan dipaparkan di sini -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ===== Pembolehubah global =====
+            const bgCanvas = document.getElementById('background-canvas');
+            const drawingCanvas = document.getElementById('drawing-canvas');
+            // Tetapkan konteks optimum untuk prestasi yang lebih baik
+            const bgCtx = bgCanvas.getContext('2d', { alpha: false, desynchronized: true });
+            const ctx = drawingCanvas.getContext('2d', { alpha: true, desynchronized: true });
+            const colorPicker = document.getElementById('color-picker');
+            const sizeSlider = document.getElementById('size-slider');
+            const sizeDisplay = document.getElementById('size-display');
+            const opacitySlider = document.getElementById('opacity-slider');
+            const opacityDisplay = document.getElementById('opacity-display');
+            const clearButton = document.getElementById('clear-canvas-button');
+            const saveButton = document.getElementById('save-button');
+            const undoButton = document.getElementById('undo-button');
+            const redoButton = document.getElementById('redo-button');
+            const themeToggle = document.getElementById('theme-toggle');
+            const gridToggle = document.getElementById('grid-toggle');
+            const canvasGrid = document.getElementById('canvas-grid');
+            const exportDropdown = document.getElementById('export-dropdown');
+            const exportOptions = document.getElementById('export-options');
+            const historyContainer = document.getElementById('history-container');
+            
+            // Alat lukisan
+            const brushTool = document.getElementById('brush-tool');
+            const eraserTool = document.getElementById('eraser-tool');
+            const eyedropperTool = document.getElementById('eyedropper-tool');
+            const fillTool = document.getElementById('fill-tool');
+            const textTool = document.getElementById('text-tool');
+            const lineTool = document.getElementById('line-tool');
+            const rectangleTool = document.getElementById('rectangle-tool');
+            const circleTool = document.getElementById('circle-tool');
+            const triangleTool = document.getElementById('triangle-tool');
+            
+            // Berus
+            const brushNormal = document.getElementById('brush-normal');
+            const brushSquare = document.getElementById('brush-square');
+            const brushSoft = document.getElementById('brush-soft');
+            const brushSpray = document.getElementById('brush-spray');
+            
+            // Lapisan
+            const addLayerButton = document.getElementById('add-layer-button');
+            const deleteLayerButton = document.getElementById('delete-layer-button');
+            const mergeLayersButton = document.getElementById('merge-layers-button');
+            const layersList = document.getElementById('layers-list');
+            
+            // Latar belakang
+            const bgPresets = document.querySelectorAll('.background-preset');
+            const uploadBgButton = document.getElementById('upload-bg-button');
+            const bgUpload = document.getElementById('bg-upload');
+            
+            // Penapis
+            const filterItems = document.querySelectorAll('.filter-item');
+            
+            // Pembolehuah lukisan
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+            let currentColor = colorPicker.value;
+            let currentOpacity = opacitySlider.value / 100;
+            let lineWidth = sizeSlider.value;
+            let currentTool = 'brush';
+            let currentBrush = 'normal';
+            let startX, startY;
+            
+            // Lapisan
+            let layers = [{
+                id: 1,
+                name: 'Lapisan 1',
+                visible: true,
+                opacity: 1,
+                data: null
+            }];
+            let activeLayerIndex = 0;
+            
+            // Sejarah
+            let history = [];
+            let historyIndex = -1;
+            let maxHistoryLength = 20;
+            
+            // Pembolehubah tema
+            let isDarkMode = false;
+            let backgroundColor = 'white';
+            let gridVisible = false;
+            
+            // Tetapkan dimensi canvas
+            function resizeCanvas() {
+                const container = drawingCanvas.parentElement.parentElement;
+                const containerWidth = container.clientWidth;
+                
+                // Tetapkan lebar minimum 300px dan maksimum lebar kontainer
+                const canvasWidth = Math.max(300, containerWidth);
+                const canvasHeight = Math.max(250, canvasWidth * 0.6); // Nisbah 5:3 dengan minimum 250px
+                
+                // Tetapkan lebar canvas
+                bgCanvas.width = canvasWidth;
+                bgCanvas.height = canvasHeight;
+                drawingCanvas.width = canvasWidth;
+                drawingCanvas.height = canvasHeight;
+                
+                // Pastikan kanvas kelihatan
+                drawingCanvas.style.display = 'block';
+                bgCanvas.style.display = 'block';
+                
+                // Lukis semula latar belakang
+                drawBackground();
+                
+                // Lukis semula kanvas
+                renderCanvas();
+                
+                // Buat grid jika diperlukan
+                createGrid();
+                
+                // Tambah alert jika kanvas masih tidak kelihatan selepas 1 saat
+                setTimeout(function() {
+                    const canvasRect = drawingCanvas.getBoundingClientRect();
+                    if (canvasRect.width < 50 || canvasRect.height < 50) {
+                        console.error("Canvas tidak dipaparkan dengan betul. Cuba refresh halaman.");
+                        alert("Kanvas tidak dapat dipaparkan dengan betul. Sila refresh halaman atau cuba browser lain.");
+                    }
+                }, 1000);
+            }
+            
+            // ===== FUNGSI UTAMA =====
+            
+            // Tetapkan semula alat
+            function resetTools() {
+                document.querySelectorAll('.tool-icon').forEach(tool => {
+                    tool.classList.remove('active');
+                });
+            }
+            
+            // Tukar alat aktif
+            function setActiveTool(toolName) {
+                resetTools();
+                currentTool = toolName;
+                
+                switch(toolName) {
+                    case 'brush':
+                        brushTool.classList.add('active');
+                        drawingCanvas.style.cursor = 'crosshair';
+                        break;
+                    case 'eraser':
+                        eraserTool.classList.add('active');
+                        drawingCanvas.style.cursor = 'crosshair';
+                        break;
+                    case 'eyedropper':
+                        eyedropperTool.classList.add('active');
+                        drawingCanvas.style.cursor = 'crosshair';
+                        break;
+                    case 'fill':
+                        fillTool.classList.add('active');
+                        drawingCanvas.style.cursor = 'crosshair';
+                        break;
+                    case 'text':
+                        textTool.classList.add('active');
+                        drawingCanvas.style.cursor = 'text';
+                        break;
+                    case 'line':
+                        lineTool.classList.add('active');
+                        drawingCanvas.style.cursor = 'crosshair';
+                        break;
+                    case 'rectangle':
+                        rectangleTool.classList.add('active');
+                        drawingCanvas.style.cursor = 'crosshair';
+                        break;
+                    case 'circle':
+                        circleTool.classList.add('active');
+                        drawingCanvas.style.cursor = 'crosshair';
+                        break;
+                    case 'triangle':
+                        triangleTool.classList.add('active');
+                        drawingCanvas.style.cursor = 'crosshair';
+                        break;
+                }
+            }
+            
+            // Reset berus
+            function resetBrushes() {
+                document.querySelectorAll('.brush-preview').forEach(brush => {
+                    brush.classList.remove('active');
+                });
+            }
+            
+            // Tetapkan berus aktif
+            function setActiveBrush(brushName) {
+                resetBrushes();
+                currentBrush = brushName;
+                
+                switch(brushName) {
+                    case 'normal':
+                        brushNormal.classList.add('active');
+                        break;
+                    case 'square':
+                        brushSquare.classList.add('active');
+                        break;
+                    case 'soft':
+                        brushSoft.classList.add('active');
+                        break;
+                    case 'spray':
+                        brushSpray.classList.add('active');
+                        break;
+                }
+            }
+            
+            // ===== FUNGSI LUKISAN =====
+            
+            function startDrawing(e) {
+                isDrawing = true;
+                [lastX, lastY] = getCoordinates(e);
+                
+                // Simpan titik mula untuk bentuk
+                startX = lastX;
+                startY = lastY;
+                
+                // Jika menggunakan alat yang memerlukan pratonton
+                if (['line', 'rectangle', 'circle', 'triangle'].includes(currentTool)) {
+                    // Simpan salinan kanvas untuk pratonton
+                    saveCanvasState();
+                }
+            }
+            
+            function draw(e) {
+                if (!isDrawing) return;
+                e.preventDefault();
+                
+                const [currentX, currentY] = getCoordinates(e);
+                
+                switch(currentTool) {
+                    case 'brush':
+                        drawBrush(currentX, currentY);
+                        break;
+                    case 'eraser':
+                        erase(currentX, currentY);
+                        break;
+                    case 'eyedropper':
+                        pickColor(currentX, currentY);
+                        break;
+                    case 'line':
+                        previewLine(currentX, currentY);
+                        break;
+                    case 'rectangle':
+                        previewRectangle(currentX, currentY);
+                        break;
+                    case 'circle':
+                        previewCircle(currentX, currentY);
+                        break;
+                    case 'triangle':
+                        previewTriangle(currentX, currentY);
+                        break;
+                }
+                
+                [lastX, lastY] = [currentX, currentY];
+            }
+            
+            function stopDrawing() {
+                if (!isDrawing) return;
+                isDrawing = false;
+                
+                // Jika menggunakan alat bentuk, lukis bentuk akhir
+                if (['line', 'rectangle', 'circle', 'triangle'].includes(currentTool)) {
+                    finalizeShape();
+                    addToHistory();
+                } else if (['brush', 'eraser'].includes(currentTool)) {
+                    addToHistory();
+                }
+            }
+            
+            // ===== FUNGSI ALAT LUKISAN =====
+            
+            function drawBrush(x, y) {
+                ctx.globalAlpha = currentOpacity;
+                ctx.lineWidth = lineWidth;
+                ctx.strokeStyle = currentColor;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                
+                ctx.beginPath();
+                
+                switch(currentBrush) {
+                    case 'normal':
+                        ctx.moveTo(lastX, lastY);
+                        ctx.lineTo(x, y);
+                        ctx.stroke();
+                        break;
+                    case 'square':
+                        ctx.lineJoin = 'miter';
+                        ctx.lineCap = 'square';
+                        ctx.moveTo(lastX, lastY);
+                        ctx.lineTo(x, y);
+                        ctx.stroke();
+                        break;
+                    case 'soft':
+                        // Berus lembut dengan kesan blur
+                        const gradient = ctx.createRadialGradient(x, y, 0, x, y, lineWidth);
+                        gradient.addColorStop(0, currentColor);
+                        gradient.addColorStop(1, 'rgba(0,0,0,0)');
+                        
+                        ctx.fillStyle = gradient;
+                        ctx.beginPath();
+                        ctx.arc(x, y, lineWidth, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'spray':
+                        // Berus semburan
+                        for (let i = 0; i < lineWidth * 2; i++) {
+                            const offsetX = (Math.random() - 0.5) * lineWidth * 2;
+                            const offsetY = (Math.random() - 0.5) * lineWidth * 2;
+                            const distance = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
+                            
+                            if (distance <= lineWidth) {
+                                ctx.fillStyle = currentColor;
+                                ctx.beginPath();
+                                ctx.arc(x + offsetX, y + offsetY, 1, 0, Math.PI * 2);
+                                ctx.fill();
+                            }
+                        }
+                        break;
+                }
+                
+                ctx.globalAlpha = 1;
+            }
+            
+            function erase(x, y) {
+                ctx.globalCompositeOperation = 'destination-out';
+                ctx.lineWidth = lineWidth;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                
+                ctx.globalCompositeOperation = 'source-over';
+            }
+            
+            function pickColor(x, y) {
+                const pixel = ctx.getImageData(x, y, 1, 1).data;
+                const color = `rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
+                
+                // Tukar kembali ke alat berus selepas mengambil warna
+                currentColor = rgbToHex(pixel[0], pixel[1], pixel[2]);
+                colorPicker.value = currentColor;
+                
+                updateColorPresets();
+                setActiveTool('brush');
+                
+                // Tetapkan semula kursor
+                isDrawing = false;
+            }
+            
+            function previewLine(x, y) {
+                // Lukis semula keadaan asal
+                restoreCanvasState();
+                
+                // Lukis garisan pratonton
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(x, y);
+                ctx.strokeStyle = currentColor;
+                ctx.lineWidth = lineWidth;
+                ctx.globalAlpha = currentOpacity;
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+            }
+            
+            function previewRectangle(x, y) {
+                // Lukis semula keadaan asal
+                restoreCanvasState();
+                
+                // Lukis segiempat pratonton
+                ctx.beginPath();
+                ctx.rect(
+                    startX < x ? startX : x,
+                    startY < y ? startY : y,
+                    Math.abs(x - startX),
+                    Math.abs(y - startY)
+                );
+                ctx.strokeStyle = currentColor;
+                ctx.lineWidth = lineWidth;
+                ctx.globalAlpha = currentOpacity;
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+            }
+            
+            function previewCircle(x, y) {
+                // Lukis semula keadaan asal
+                restoreCanvasState();
+                
+                // Kira radius
+                const radius = Math.sqrt(Math.pow(x - startX, 2) + Math.pow(y - startY, 2));
+                
+                // Lukis bulatan pratonton
+                ctx.beginPath();
+                ctx.arc(startX, startY, radius, 0, Math.PI * 2);
+                ctx.strokeStyle = currentColor;
+                ctx.lineWidth = lineWidth;
+                ctx.globalAlpha = currentOpacity;
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+            }
+            
+            function previewTriangle(x, y) {
+                // Lukis semula keadaan asal
+                restoreCanvasState();
+                
+                // Kira titik segitiga
+                const xDiff = x - startX;
+                const yDiff = y - startY;
+                
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+                ctx.lineTo(x, y);
+                ctx.lineTo(startX - xDiff, y);
+                ctx.closePath();
+                
+                ctx.strokeStyle = currentColor;
+                ctx.lineWidth = lineWidth;
+                ctx.globalAlpha = currentOpacity;
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+            }
+            
+            function finalizeShape() {
+                // Perlu disimpan selepas melukis bentuk terakhir
+                switch(currentTool) {
+                    case 'line':
+                        previewLine(lastX, lastY);
+                        break;
+                    case 'rectangle':
+                        previewRectangle(lastX, lastY);
+                        break;
+                    case 'circle':
+                        previewCircle(lastX, lastY);
+                        break;
+                    case 'triangle':
+                        previewTriangle(lastX, lastY);
+                        break;
+                }
+            }
+            
+            // ===== FUNGSI SEJARAH =====
+            
+            let canvasState = null;
+            
+            function saveCanvasState() {
+                canvasState = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+            }
+            
+            function restoreCanvasState() {
+                if (canvasState) {
+                    ctx.putImageData(canvasState, 0, 0);
+                }
+            }
+            
+            function addToHistory() {
+                // Potong sejarah jika kita tidak berada di akhir
+                if (historyIndex < history.length - 1) {
+                    history = history.slice(0, historyIndex + 1);
+                }
+                
+                // Tambah keadaan semasa ke sejarah
+                const currentState = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+                history.push(currentState);
+                
+                // Pastikan sejarah tidak terlalu panjang
+                if (history.length > maxHistoryLength) {
+                    history.shift();
+                }
+                
+                historyIndex = history.length - 1;
+                
+                // Kemas kini UI sejarah
+                updateHistoryUI();
+                
+                // Pastikan butang undo/redo dikemas kini
+                updateUndoRedoButtons();
+            }
+            
+            function undo() {
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    ctx.putImageData(history[historyIndex], 0, 0);
+                    updateHistoryUI();
+                    updateUndoRedoButtons();
+                }
+            }
+            
+            function redo() {
+                if (historyIndex < history.length - 1) {
+                    historyIndex++;
+                    ctx.putImageData(history[historyIndex], 0, 0);
+                    updateHistoryUI();
+                    updateUndoRedoButtons();
+                }
+            }
+            
+            function updateUndoRedoButtons() {
+                undoButton.disabled = historyIndex <= 0;
+                redoButton.disabled = historyIndex >= history.length - 1;
+                
+                // Tambah/buang kelas untuk kelihatan dilumpuhkan
+                undoButton.classList.toggle('disabled', historyIndex <= 0);
+                redoButton.classList.toggle('disabled', historyIndex >= history.length - 1);
+            }
+            
+            function updateHistoryUI() {
+                // Kosongkan bekas sejarah
+                historyContainer.innerHTML = '';
+                
+                // Tambah thumbnail untuk setiap keadaan sejarah
+                for (let i = 0; i < history.length; i++) {
+                    const thumbnail = document.createElement('div');
+                    thumbnail.className = 'history-thumbnail' + (i === historyIndex ? ' active' : '');
+                    
+                    // Buat thumbnail dari keadaan sejarah
+                    const tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = drawingCanvas.width;
+                    tempCanvas.height = drawingCanvas.height;
+                    tempCanvas.getContext('2d').putImageData(history[i], 0, 0);
+                    
+                    thumbnail.style.backgroundImage = `url(${tempCanvas.toDataURL()})`;
+                    
+                    // Tambah peristiwa klik
+                    thumbnail.addEventListener('click', () => {
+                        historyIndex = i;
+                        ctx.putImageData(history[historyIndex], 0, 0);
+                        updateHistoryUI();
+                        updateUndoRedoButtons();
+                    });
+                    
+                    historyContainer.appendChild(thumbnail);
+                }
+            }
+            
+            // ===== FUNGSI PENAPIS =====
+            
+            function applyFilter(filterName) {
+                // Tetapkan penapis CSS ke kanvas
+                switch(filterName) {
+                    case 'grayscale':
+                        drawingCanvas.style.filter = 'grayscale(100%)';
+                        break;
+                    case 'sepia':
+                        drawingCanvas.style.filter = 'sepia(100%)';
+                        break;
+                    case 'blur':
+                        drawingCanvas.style.filter = 'blur(1px)';
+                        break;
+                    default:
+                        drawingCanvas.style.filter = 'none';
+                        break;
+                }
+            }
+            
+            // ===== FUNGSI GRID =====
+            
+            function createGrid() {
+                const gridSize = 20;
+                const width = drawingCanvas.width;
+                const height = drawingCanvas.height;
+                
+                canvasGrid.style.backgroundSize = `${gridSize}px ${gridSize}px`;
+                canvasGrid.style.backgroundImage = `linear-gradient(to right, #ddd 1px, transparent 1px), 
+                                                  linear-gradient(to bottom, #ddd 1px, transparent 1px)`;
+                canvasGrid.style.width = `${width}px`;
+                canvasGrid.style.height = `${height}px`;
+                
+                if (isDarkMode) {
+                    canvasGrid.style.backgroundImage = `linear-gradient(to right, #555 1px, transparent 1px), 
+                                                      linear-gradient(to bottom, #555 1px, transparent 1px)`;
+                }
+            }
+            
+            function toggleGrid() {
+                gridVisible = !gridVisible;
+                canvasGrid.classList.toggle('visible', gridVisible);
+                gridToggle.classList.toggle('active', gridVisible);
+            }
+            
+            // ===== FUNGSI LATAR BELAKANG =====
+            
+            function drawBackground() {
+                bgCtx.fillStyle = backgroundColor;
+                bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+                
+                // Tambah corak jika diperlukan
+                switch (backgroundColor) {
+                    case 'grid':
+                        drawGridBackground();
+                        break;
+                    case 'dots':
+                        drawDotsBackground();
+                        break;
+                    // Boleh tambah lagi jenis latar belakang di sini
+                }
+            }
+            
+            function drawGridBackground() {
+                const gridSize = 20;
+                
+                bgCtx.fillStyle = 'white';
+                bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+                
+                bgCtx.strokeStyle = '#e0e0e0';
+                bgCtx.lineWidth = 1;
+                
+                // Lukis grid menegak
+                for (let x = 0; x <= bgCanvas.width; x += gridSize) {
+                    bgCtx.beginPath();
+                    bgCtx.moveTo(x, 0);
+                    bgCtx.lineTo(x, bgCanvas.height);
+                    bgCtx.stroke();
+                }
+                
+                // Lukis grid mendatar
+                for (let y = 0; y <= bgCanvas.height; y += gridSize) {
+                    bgCtx.beginPath();
+                    bgCtx.moveTo(0, y);
+                    bgCtx.lineTo(bgCanvas.width, y);
+                    bgCtx.stroke();
+                }
+            }
+            
+            function drawDotsBackground() {
+                const dotSpacing = 20;
+                const dotSize = 2;
+                
+                bgCtx.fillStyle = 'white';
+                bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+                
+                bgCtx.fillStyle = '#e0e0e0';
+                
+                for (let x = dotSpacing / 2; x < bgCanvas.width; x += dotSpacing) {
+                    for (let y = dotSpacing / 2; y < bgCanvas.height; y += dotSpacing) {
+                        bgCtx.beginPath();
+                        bgCtx.arc(x, y, dotSize / 2, 0, Math.PI * 2);
+                        bgCtx.fill();
+                    }
+                }
+            }
+            
+            function setBackgroundFromUpload(file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+                        
+                        // Lukis imej sebagai latar belakang 
+                        bgCtx.drawImage(img, 0, 0, bgCanvas.width, bgCanvas.height);
+                    };
+                    img.src = e.target.result;
+                };
+                
+                reader.readAsDataURL(file);
+            }
+            
+            // ===== FUNGSI ALAT PENAPIS =====
+            
+            // Fungsi untuk menukar antara dua tema
+            function toggleTheme() {
+                isDarkMode = !isDarkMode;
+                document.body.classList.toggle('dark-mode', isDarkMode);
+                themeToggle.textContent = isDarkMode ? '🌙' : '☀️';
+                
+                // Kemas kini grid jika dipaparkan
+                createGrid();
+            }
+            
+            // ===== FUNGSI SIMPAN DAN EKSPORT =====
+            
+            function saveImage() {
+                // Gabungkan semua lapisan ke kanvas sementara
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = drawingCanvas.width;
+                tempCanvas.height = drawingCanvas.height;
+                const tempCtx = tempCanvas.getContext('2d');
+                
+                // Lukis latar belakang dahulu
+                tempCtx.drawImage(bgCanvas, 0, 0);
+                
+                // Lukis lapisan lukisan
+                tempCtx.drawImage(drawingCanvas, 0, 0);
+                
+                // Cipta pautan muat turun
+                const link = document.createElement('a');
+                link.download = 'lukisan-saya.png';
+                link.href = tempCanvas.toDataURL('image/png');
+                link.click();
+            }
+            
+            function exportImage(format) {
+                // Gabungkan semua lapisan ke kanvas sementara
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = drawingCanvas.width;
+                tempCanvas.height = drawingCanvas.height;
+                const tempCtx = tempCanvas.getContext('2d');
+                
+                // Lukis latar belakang dahulu
+                tempCtx.drawImage(bgCanvas, 0, 0);
+                
+                // Lukis lapisan lukisan
+                tempCtx.drawImage(drawingCanvas, 0, 0);
+                
+                // Cipta pautan muat turun
+                const link = document.createElement('a');
+                
+                switch (format) {
+                    case 'png':
+                        link.download = 'lukisan-saya.png';
+                        link.href = tempCanvas.toDataURL('image/png');
+                        break;
+                    case 'jpeg':
+                        link.download = 'lukisan-saya.jpg';
+                        link.href = tempCanvas.toDataURL('image/jpeg', 0.9);
+                        break;
+                    case 'svg':
+                        // Ini adalah contoh asas, SVG sebenar memerlukan penukaran yang lebih kompleks
+                        alert('Fungsi eksport SVG akan ditambah dalam versi akan datang.');
+                        return;
+                }
+                
+                link.click();
+            }
+            
+            // ===== FUNGSI BANTUAN =====
+            
+            // Dapatkan koordinat tetikus/sentuhan
+            function getCoordinates(e) {
+                let x, y;
+                
+                // Periksa jika input adalah sentuhan atau tetikus
+                if (e.type.includes('touch')) {
+                    const touch = e.touches[0] || e.changedTouches[0];
+                    const rect = drawingCanvas.getBoundingClientRect();
+                    x = touch.clientX - rect.left;
+                    y = touch.clientY - rect.top;
+                } else {
+                    const rect = drawingCanvas.getBoundingClientRect();
+                    x = e.clientX - rect.left;
+                    y = e.clientY - rect.top;
+                }
+                
+                return [x, y];
+            }
+            
+            // Semula kanvas lukisan
+            function clearCanvas() {
+                if (confirm('Adakah anda pasti mahu memadamkan semua lukisan?')) {
+                    ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+                    
+                    // Tetapkan semula sejarah
+                    history = [];
+                    historyIndex = -1;
+                    
+                    // Tambah keadaan kosong baharu ke sejarah
+                    addToHistory();
+                }
+            }
+            
+            // Tukar RGB kepada Hex
+            function rgbToHex(r, g, b) {
+                return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+            }
+            
+            // Kemas kini pra-tetap warna
+            function updateColorPresets() {
+                document.querySelectorAll('.color-preset').forEach(preset => {
+                    preset.classList.remove('active');
+                    if (preset.dataset.color === currentColor) {
+                        preset.classList.add('active');
+                    }
+                });
+            }
+            
+            // ===== FUNGSI BAHARU =====
+            
+            // ==== KEMAMPUAN PEMASARAN ====
+            
+            // Tambah watermark ke kanvas
+            function addWatermark(text) {
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = drawingCanvas.width;
+                tempCanvas.height = drawingCanvas.height;
+                const tempCtx = tempCanvas.getContext('2d');
+                
+                // Salin kanvas semasa
+                tempCtx.drawImage(bgCanvas, 0, 0);
+                tempCtx.drawImage(drawingCanvas, 0, 0);
+                
+                // Tambah watermark
+                tempCtx.font = '16px Arial';
+                tempCtx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                tempCtx.textAlign = 'end';
+                tempCtx.textBaseline = 'bottom';
+                tempCtx.fillText(text, tempCanvas.width - 20, tempCanvas.height - 20);
+                
+                return tempCanvas;
+            }
+            
+            // Ubah saiz kanvas ke templat media sosial
+            function setCanvasTemplate(template) {
+                let width, height;
+                
+                switch(template) {
+                    case 'instagram':
+                        width = 1080;
+                        height = 1080;
+                        break;
+                    case 'facebook':
+                        width = 1200;
+                        height = 630;
+                        break;
+                    case 'twitter':
+                        width = 1200;
+                        height = 675;
+                        break;
+                    case 'youtube':
+                        width = 1280;
+                        height = 720;
+                        break;
+                    default:
+                        return;
+                }
+                
+                // Simpan kanvas semasa
+                const currentBgCanvas = bgCtx.getImageData(0, 0, bgCanvas.width, bgCanvas.height);
+                const currentDrawingCanvas = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+                
+                // Tetapkan saiz baharu
+                bgCanvas.width = width;
+                bgCanvas.height = height;
+                drawingCanvas.width = width;
+                drawingCanvas.height = height;
+                
+                // Tetapkan semula latar belakang
+                drawBackground();
+                
+                // Lukis semula kandungan lama ke tengah kanvas baharu (dengan pilihan untuk penskalaan)
+                if (confirm('Skala kandungan untuk muat dalam templat baharu?')) {
+                    // Skala kandungan
+                    const tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = currentDrawingCanvas.width;
+                    tempCanvas.height = currentDrawingCanvas.height;
+                    const tempCtx = tempCanvas.getContext('2d');
+                    tempCtx.putImageData(currentDrawingCanvas, 0, 0);
+                    
+                    ctx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 
+                                0, 0, drawingCanvas.width, drawingCanvas.height);
+                } else {
+                    // Hanya letakkan di tengah tanpa skala
+                    const x = (width - currentDrawingCanvas.width) / 2;
+                    const y = (height - currentDrawingCanvas.height) / 2;
+                    
+                    const tempCanvas = document.createElement('canvas');
+                    tempCanvas.width = currentDrawingCanvas.width;
+                    tempCanvas.height = currentDrawingCanvas.height;
+                    const tempCtx = tempCanvas.getContext('2d');
+                    tempCtx.putImageData(currentDrawingCanvas, 0, 0);
+                    
+                    ctx.drawImage(tempCanvas, x, y);
+                }
+                
+                // Rekod sejarah baharu
+                addToHistory();
+                
+                alert(`Kanvas telah diubah ke saiz ${template}: ${width}x${height}px`);
+            }
+            
+            // Eksport resolusi tinggi
+            function exportHighResolution() {
+                const scaleFactor = prompt('Masukkan faktor skala (2.0 = 2x resolusi)', '2.0');
+                if (!scaleFactor) return;
+                
+                const scale = parseFloat(scaleFactor);
+                if (isNaN(scale) || scale <= 0) {
+                    alert('Sila masukkan nombor yang sah lebih dari 0');
+                    return;
+                }
+                
+                // Buat kanvas sementara skala tinggi
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = drawingCanvas.width * scale;
+                tempCanvas.height = drawingCanvas.height * scale;
+                const tempCtx = tempCanvas.getContext('2d');
+                
+                // Skala latar belakang
+                tempCtx.fillStyle = backgroundColor;
+                tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+                
+                // Lukis kandungan dengan skala
+                const tempDrawingCanvas = document.createElement('canvas');
+                tempDrawingCanvas.width = drawingCanvas.width;
+                tempDrawingCanvas.height = drawingCanvas.height;
+                const tempDrawingCtx = tempDrawingCanvas.getContext('2d');
+                
+                // Salin kandungan lukisan
+                tempDrawingCtx.drawImage(drawingCanvas, 0, 0);
+                
+                // Skala kandungan ke kanvas resolusi tinggi
+                tempCtx.save();
+                tempCtx.scale(scale, scale);
+                tempCtx.drawImage(tempDrawingCanvas, 0, 0);
+                tempCtx.restore();
+                
+                // Buat pautan muat turun
+                const link = document.createElement('a');
+                link.download = `lukisan-highres-${scale}x.png`;
+                link.href = tempCanvas.toDataURL('image/png');
+                link.click();
+            }
+            
+            // ==== PENGOPTIMUMAN PRESTASI ====
+            
+            let fpsInterval, startTime, now, then, elapsed;
+            let fps = 60;
+            let frameCount = 0;
+            let lastFpsUpdate = 0;
+            let performanceMode = 'medium'; // low, medium, high
+            
+            // Mulakan loop animasi untuk FPS
+            function startPerformanceMonitoring(targetFps = 60) {
+                fpsInterval = 1000 / targetFps;
+                then = window.performance.now();
+                startTime = then;
+                animationLoop();
+            }
+            
+            // Loop animasi untuk fungsi rendering dan FPS
+            function animationLoop() {
+                requestAnimationFrame(animationLoop);
+                
+                now = window.performance.now();
+                elapsed = now - then;
+                
+                // FPS throttling berdasarkan mod prestasi
+                if (elapsed > fpsInterval) {
+                    then = now - (elapsed % fpsInterval);
+                    
+                    // Kira dan tunjukkan FPS
+                    frameCount++;
+                    if (now - lastFpsUpdate > 1000) {
+                        fps = Math.round(frameCount * 1000 / (now - lastFpsUpdate));
+                        document.getElementById('fps-counter').textContent = fps;
+                        frameCount = 0;
+                        lastFpsUpdate = now;
+                        
+                        // Tunjukkan penggunaan memori
+                        if (window.performance && window.performance.memory) {
+                            const memoryUsage = Math.round(window.performance.memory.usedJSHeapSize / 1048576);
+                            document.getElementById('memory-usage').textContent = `${memoryUsage} MB`;
+                        }
+                    }
+                }
+            }
+            
+            // Tetapkan mod prestasi
+            function setPerformanceMode(mode) {
+                performanceMode = mode;
+                
+                switch(mode) {
+                    case 'low':
+                        // Kurangkan kualiti untuk peranti lemah
+                        startPerformanceMonitoring(30);
+                        drawingCanvas.style.filter = 'none'; // Buang semua penapis
+                        break;
+                    case 'medium':
+                        // Mod seimbang
+                        startPerformanceMonitoring(60);
+                        break;
+                    case 'high':
+                        // Kualiti maksimum
+                        startPerformanceMonitoring(120);
+                        break;
+                }
+                
+                alert(`Mod prestasi ditetapkan ke: ${mode.toUpperCase()}`);
+            }
+            
+            // ==== INTEGRASI LANJUTAN ====
+            
+            // Import fail SVG
+            function importSVG() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.svg';
+                
+                input.onchange = e => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const svgData = event.target.result;
+                        
+                        // Buat imej dari SVG
+                        const img = new Image();
+                        img.onload = function() {
+                            // Lukis SVG ke kanvas
+                            ctx.drawImage(img, 0, 0);
+                            addToHistory();
+                        };
+                        img.src = svgData;
+                    };
+                    reader.readAsDataURL(file);
+                };
+                
+                input.click();
+            }
+            
+            // Ekstrak palet warna dari imej
+            function extractColorsFromImage() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                
+                input.onchange = e => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const img = new Image();
+                        img.onload = function() {
+                            // Buat kanvas sementara untuk analisis warna
+                            const tempCanvas = document.createElement('canvas');
+                            tempCanvas.width = img.width;
+                            tempCanvas.height = img.height;
+                            const tempCtx = tempCanvas.getContext('2d');
+                            tempCtx.drawImage(img, 0, 0);
+                            
+                            // Analisis warna (algoritma simpel)
+                            const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+                            const pixels = imageData.data;
+                            
+                            // Kumpulkan warna-warna utama
+                            const colorMap = {};
+                            const skipFactor = 10; // Langkau piksel untuk prestasi lebih baik
+                            
+                            for (let i = 0; i < pixels.length; i += 4 * skipFactor) {
+                                const r = pixels[i];
+                                const g = pixels[i + 1];
+                                const b = pixels[i + 2];
+                                
+                                // Kurangkan kepelbagaian warna dengan pembundaran
+                                const roundedR = Math.round(r / 10) * 10;
+                                const roundedG = Math.round(g / 10) * 10;
+                                const roundedB = Math.round(b / 10) * 10;
+                                
+                                const colorKey = `${roundedR},${roundedG},${roundedB}`;
+                                
+                                if (colorMap[colorKey]) {
+                                    colorMap[colorKey]++;
+                                } else {
+                                    colorMap[colorKey] = 1;
+                                }
+                            }
+                            
+                            // Pilih 10 warna teratas
+                            const sortedColors = Object.keys(colorMap).sort((a, b) => {
+                                return colorMap[b] - colorMap[a];
+                            }).slice(0, 8);
+                            
+                            // Paparkan warna-warna ini dalam preset
+                            const presetContainer = document.querySelector('.preset-container');
+                            presetContainer.innerHTML = '';
+                            
+                            sortedColors.forEach(color => {
+                                const [r, g, b] = color.split(',');
+                                const hexColor = rgbToHex(parseInt(r), parseInt(g), parseInt(b));
+                                
+                                const colorPreset = document.createElement('div');
+                                colorPreset.className = 'color-preset';
+                                colorPreset.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+                                colorPreset.dataset.color = hexColor;
+                                colorPreset.addEventListener('click', function() {
+                                    currentColor = this.dataset.color;
+                                    colorPicker.value = currentColor;
+                                    updateColorPresets();
+                                });
+                                
+                                presetContainer.appendChild(colorPreset);
+                            });
+                            
+                            alert('Palet warna telah diekstrak dari imej!');
+                        };
+                        img.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                };
+                
+                input.click();
+            }
+            
+            // ==== MOD PRESENTASI ====
+            
+            let recordingSteps = [];
+            let isRecording = false;
+            let currentStep = 0;
+            
+            // Mulakan rakaman langkah
+            function startRecording() {
+                if (isRecording) {
+                    stopRecording();
+                    return;
+                }
+                
+                isRecording = true;
+                recordingSteps = [];
+                recordStep('awal'); // Simpan keadaan awal
+                
+                alert('Rakaman langkah lukisan dimulakan. Setiap tindakan akan direkod.');
+                document.getElementById('presentation-start').textContent = 'Hentikan Rakaman';
+            }
+            
+            // Hentikan rakaman langkah
+            function stopRecording() {
+                isRecording = false;
+                alert(`Rakaman selesai. ${recordingSteps.length} langkah direkodkan.`);
+                document.getElementById('presentation-start').textContent = 'Mula Rakaman Langkah';
+            }
+            
+            // Rakam langkah semasa (simpan snapshot kanvas)
+            function recordStep(label) {
+                if (!isRecording) return;
+                
+                const canvasSnapshot = ctx.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
+                recordingSteps.push({
+                    label: label || `Langkah ${recordingSteps.length + 1}`,
+                    snapshot: canvasSnapshot
+                });
+            }
+            
+            // Mainkan semula rakaman langkah
+            function playbackRecording() {
+                if (recordingSteps.length === 0) {
+                    alert('Tiada rakaman yang tersedia. Mulakan rakaman terlebih dahulu.');
+                    return;
+                }
+                
+                // Buat modal untuk paparan
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.style.display = 'flex';
+                
+                const modalContent = document.createElement('div');
+                modalContent.className = 'modal-content';
+                
+                // Tajuk
+                const title = document.createElement('h2');
+                title.textContent = 'Rakaman Langkah Lukisan';
+                modalContent.appendChild(title);
+                
+                // Butang tutup
+                const closeButton = document.createElement('div');
+                closeButton.className = 'modal-close';
+                closeButton.textContent = '×';
+                closeButton.onclick = () => {
+                    document.body.removeChild(modal);
+                };
+                modalContent.appendChild(closeButton);
+                
+                // Kawasan kanvas
+                const playbackCanvas = document.createElement('canvas');
+                playbackCanvas.width = drawingCanvas.width;
+                playbackCanvas.height = drawingCanvas.height;
+                playbackCanvas.style.border = '1px solid #ccc';
+                playbackCanvas.style.maxWidth = '100%';
+                modalContent.appendChild(playbackCanvas);
+                
+                const playbackCtx = playbackCanvas.getContext('2d');
+                
+                // Kawalan pemain
+                const controls = document.createElement('div');
+                controls.className = 'slideshow-controls';
+                
+                const prevButton = document.createElement('button');
+                prevButton.className = 'btn btn-info';
+                prevButton.textContent = '⬅️ Kembali';
+                prevButton.onclick = () => {
+                    if (currentStep > 0) {
+                        currentStep--;
+                        updatePlayback();
+                    }
+                };
+                
+                const nextButton = document.createElement('button');
+                nextButton.className = 'btn btn-info';
+                nextButton.textContent = 'Langkah ➡️';
+                nextButton.onclick = () => {
+                    if (currentStep < recordingSteps.length - 1) {
+                        currentStep++;
+                        updatePlayback();
+                    }
+                };
+                
+                const stepLabel = document.createElement('div');
+                stepLabel.id = 'step-label';
+                stepLabel.style.margin = '10px 0';
+                
+                controls.appendChild(prevButton);
+                controls.appendChild(nextButton);
+                modalContent.appendChild(controls);
+                modalContent.appendChild(stepLabel);
+                
+                modal.appendChild(modalContent);
+                document.body.appendChild(modal);
+                
+                // Tetapkan langkah semasa
+                currentStep = 0;
+                
+                // Fungsi untuk kemaskini paparan pemainan semula
+                function updatePlayback() {
+                    const step = recordingSteps[currentStep];
+                    playbackCtx.putImageData(step.snapshot, 0, 0);
+                    stepLabel.textContent = `${step.label} (${currentStep + 1}/${recordingSteps.length})`;
+                    
+                    prevButton.disabled = currentStep === 0;
+                    nextButton.disabled = currentStep === recordingSteps.length - 1;
+                }
+                
+                // Paparkan langkah pertama
+                updatePlayback();
+            }
+            
+            // Paparan mod slaid
+            function startSlideshow() {
+                if (history.length <= 1) {
+                    alert('Tiada sejarah lukisan mencukupi untuk paparan slaid.');
+                    return;
+                }
+                
+                // Buat modal untuk paparan
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.style.display = 'flex';
+                
+                const modalContent = document.createElement('div');
+                modalContent.className = 'modal-content';
+                
+                // Tajuk
+                const title = document.createElement('h2');
+                title.textContent = 'Paparan Slaid Lukisan';
+                modalContent.appendChild(title);
+                
+                // Butang tutup
+                const closeButton = document.createElement('div');
+                closeButton.className = 'modal-close';
+                closeButton.textContent = '×';
+                closeButton.onclick = () => {
+                    document.body.removeChild(modal);
+                    clearInterval(autoplayInterval);
+                };
+                modalContent.appendChild(closeButton);
+                
+                // Kawasan kanvas
+                const slideshowCanvas = document.createElement('canvas');
+                slideshowCanvas.width = drawingCanvas.width;
+                slideshowCanvas.height = drawingCanvas.height;
+                slideshowCanvas.style.border = '1px solid #ccc';
+                slideshowCanvas.style.maxWidth = '100%';
+                modalContent.appendChild(slideshowCanvas);
+                
+                const slideshowCtx = slideshowCanvas.getContext('2d');
+                
+                // Kawalan pemain
+                const controls = document.createElement('div');
+                controls.className = 'slideshow-controls';
+                
+                const prevButton = document.createElement('button');
+                prevButton.className = 'btn btn-info';
+                prevButton.textContent = '⬅️ Kembali';
+                
+                const playButton = document.createElement('button');
+                playButton.className = 'btn btn-warning';
+                playButton.textContent = '▶️ Auto';
+                
+                const nextButton = document.createElement('button');
+                nextButton.className = 'btn btn-info';
+                nextButton.textContent = 'Seterusnya ➡️';
+                
+                const stepLabel = document.createElement('div');
+                stepLabel.id = 'slide-label';
+                stepLabel.style.margin = '10px 0';
+                
+                controls.appendChild(prevButton);
+                controls.appendChild(playButton);
+                controls.appendChild(nextButton);
+                modalContent.appendChild(controls);
+                modalContent.appendChild(stepLabel);
+                
+                modal.appendChild(modalContent);
+                document.body.appendChild(modal);
+                
+                // Tetapkan slaid semasa
+                let currentSlide = 0;
+                let autoplayInterval;
+                let isAutoPlaying = false;
+                
+                // Kemaskini paparan slaid
+                function updateSlide() {
+                    slideshowCtx.putImageData(history[currentSlide], 0, 0);
+                    stepLabel.textContent = `Slaid ${currentSlide + 1}/${history.length}`;
+                    
+                    prevButton.disabled = currentSlide === 0;
+                    nextButton.disabled = currentSlide === history.length - 1;
+                }
+                
+                // Main auto
+                function toggleAutoplay() {
+                    if (isAutoPlaying) {
+                        clearInterval(autoplayInterval);
+                        playButton.textContent = '▶️ Auto';
+                        isAutoPlaying = false;
+                    } else {
+                        autoplayInterval = setInterval(() => {
+                            if (currentSlide < history.length - 1) {
+                                currentSlide++;
+                                updateSlide();
+                            } else {
+                                clearInterval(autoplayInterval);
+                                playButton.textContent = '▶️ Auto';
+                                isAutoPlaying = false;
+                            }
+                        }, 1500);
+                        
+                        playButton.textContent = '⏸️ Pause';
+                        isAutoPlaying = true;
+                    }
+                }
+                
+                // Peristiwa butang
+                prevButton.onclick = () => {
+                    if (currentSlide > 0) {
+                        currentSlide--;
+                        updateSlide();
+                    }
+                };
+                
+                nextButton.onclick = () => {
+                    if (currentSlide < history.length - 1) {
+                        currentSlide++;
+                        updateSlide();
+                    }
+                };
+                
+                playButton.onclick = toggleAutoplay;
+                
+                // Paparkan slaid pertama
+                updateSlide();
+            }
+            
+            // ===== FUNGSI PEMULA =====
+            
+            // Tetapkan dimension awal
+            resizeCanvas();
+            
+            // Rekodkan keadaan permulaan untuk sejarah
+            addToHistory();
+            
+            // Mula pemantauan prestasi
+            startPerformanceMonitoring(60);
+            
+            // Fungsi untuk merangkap kekunci
+            function handleKeyDown(e) {
+                // Pintasan
+                switch (e.key.toLowerCase()) {
+                    case 'z':
+                        if (e.ctrlKey || e.metaKey) {
+                            e.preventDefault();
+                            undo();
+                        }
+                        break;
+                    case 'y':
+                        if (e.ctrlKey || e.metaKey) {
+                            e.preventDefault();
+                            redo();
+                        }
+                        break;
+                    case 'b':
+                        setActiveTool('brush');
+                        break;
+                    case 'e':
+                        setActiveTool('eraser');
+                        break;
+                    case 'i':
+                        setActiveTool('eyedropper');
+                        break;
+                    case 'g':
+                        setActiveTool('fill');
+                        break;
+                    case 't':
+                        setActiveTool('text');
+                        break;
+                    case 'l':
+                        setActiveTool('line');
+                        break;
+                    case 'r':
+                        setActiveTool('rectangle');
+                        break;
+                    case 'c':
+                        setActiveTool('circle');
+                        break;
+                    case 'y':
+                        setActiveTool('triangle');
+                        break;
+                    case 's':
+                        if (e.ctrlKey || e.metaKey) {
+                            e.preventDefault();
+                            saveImage();
+                        }
+                        break;
+                }
+            }
+            
+            // Renderkan kanvas dengan semua data (digunakan apabila tukar saiz atau lain-lain)
+            function renderCanvas() {
+                // Tidak perlu melakukan apa-apa jika kita tiada sejarah
+                if (history.length > 0 && historyIndex >= 0) {
+                    ctx.putImageData(history[historyIndex], 0, 0);
+                }
+            }
+            
+            // ===== PENDENGAR ACARA =====
+            
+            // Tetapkan sesuai untuk semua saiz skrin
+            window.addEventListener('resize', resizeCanvas);
+            
+            // Periksa jika kanvas telah dimuat dengan betul
+            function checkCanvasVisibility() {
+                const canvasRect = drawingCanvas.getBoundingClientRect();
+                const canvasError = document.getElementById('canvas-error');
+                
+                if (canvasRect.width < 50 || canvasRect.height < 50) {
+                    console.error("Canvas tidak dipaparkan dengan betul");
+                    if (canvasError) canvasError.style.display = 'block';
+                    return false;
+                } else {
+                    if (canvasError) canvasError.style.display = 'none';
+                    return true;
+                }
+            }
+            
+            // Periksa dan tambah event listeners selepas kanvas dimuat
+            setTimeout(function() {
+                if (checkCanvasVisibility()) {
+                    // Pendengar peristiwa untuk tetikus pada kanvas
+                    drawingCanvas.addEventListener('mousedown', startDrawing);
+                    drawingCanvas.addEventListener('mousemove', draw);
+                    window.addEventListener('mouseup', stopDrawing);
+                    drawingCanvas.addEventListener('mouseout', () => {
+                        if (isDrawing && ['line', 'rectangle', 'circle', 'triangle'].includes(currentTool)) {
+                            // Jangan hentikan melukis jika kursor keluar dari kanvas, 
+                            // hanya untuk alat yang memerlukan melukis bentuk penuh
+                        } else {
+                            stopDrawing();
+                        }
+                    });
+                    
+                    // Pendengar peristiwa untuk sentuhan
+                    drawingCanvas.addEventListener('touchstart', startDrawing);
+                    drawingCanvas.addEventListener('touchmove', draw);
+                    drawingCanvas.addEventListener('touchend', stopDrawing);
+                } else {
+                    // Cuba semula selepas 1 saat jika masih gagal
+                    setTimeout(resizeCanvas, 1000);
+                }
+            }, 500);
+            
+            // Pendengar peristiwa untuk kekunci
+            window.addEventListener('keydown', handleKeyDown);
+            
+            // ===== PENDENGAR ACARA UNTUK CIRI BAHARU =====
+            
+            // Kemampuan Pemasaran
+            document.getElementById('export-high-res').addEventListener('click', function() {
+                exportHighResolution();
+                document.getElementById('export-options').style.display = 'none';
+            });
+            
+            document.getElementById('export-watermark').addEventListener('click', function() {
+                const watermarkText = document.getElementById('watermark-text').value || 'Copyright © 2025';
+                
+                const watermarkedCanvas = addWatermark(watermarkText);
+                
+                const link = document.createElement('a');
+                link.download = 'lukisan-watermark.png';
+                link.href = watermarkedCanvas.toDataURL('image/png');
+                link.click();
+                
+                document.getElementById('export-options').style.display = 'none';
+            });
+            
+            document.getElementById('add-watermark-button').addEventListener('click', function() {
+                const watermarkText = document.getElementById('watermark-text').value;
+                if (!watermarkText) {
+                    alert('Sila masukkan teks watermark');
+                    return;
+                }
+                
+                // Buat paparan watermark
+                let watermarkPreview = document.querySelector('.watermark-preview');
+                if (!watermarkPreview) {
+                    watermarkPreview = document.createElement('div');
+                    watermarkPreview.className = 'watermark-preview';
+                    document.querySelector('.canvas-container').appendChild(watermarkPreview);
+                }
+                
+                watermarkPreview.textContent = watermarkText;
+            });
+            
+            document.getElementById('add-signature-button').addEventListener('click', function() {
+                setActiveTool('brush');
+                currentColor = '#000000';
+                lineWidth = 2;
+                alert('Mod tandatangan aktif. Lukis tandatangan anda pada kanvas.');
+            });
+            
+            // Template Media Sosial
+            const templateDropdown = document.getElementById('template-dropdown');
+            const templateOptions = document.getElementById('template-options');
+            
+            templateDropdown.addEventListener('click', function() {
+                templateOptions.style.display = templateOptions.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            document.getElementById('template-instagram').addEventListener('click', function() {
+                setCanvasTemplate('instagram');
+                templateOptions.style.display = 'none';
+            });
+            
+            document.getElementById('template-facebook').addEventListener('click', function() {
+                setCanvasTemplate('facebook');
+                templateOptions.style.display = 'none';
+            });
+            
+            document.getElementById('template-twitter').addEventListener('click', function() {
+                setCanvasTemplate('twitter');
+                templateOptions.style.display = 'none';
+            });
+            
+            document.getElementById('template-youtube').addEventListener('click', function() {
+                setCanvasTemplate('youtube');
+                templateOptions.style.display = 'none';
+            });
+            
+            // Pengoptimuman Prestasi
+            document.getElementById('performance-toggle').addEventListener('click', function() {
+                const currentMode = document.getElementById('quality-setting').value;
+                
+                // Tukar ke mod seterusnya
+                if (currentMode === 'high') {
+                    document.getElementById('quality-setting').value = 'medium';
+                    setPerformanceMode('medium');
+                } else if (currentMode === 'medium') {
+                    document.getElementById('quality-setting').value = 'low';
+                    setPerformanceMode('low');
+                } else {
+                    document.getElementById('quality-setting').value = 'high';
+                    setPerformanceMode('high');
+                }
+            });
+            
+            document.getElementById('quality-setting').addEventListener('change', function() {
+                setPerformanceMode(this.value);
+            });
+            
+            // Integrasi Lanjutan
+            const importDropdown = document.getElementById('import-dropdown');
+            const importOptions = document.getElementById('import-options');
+            
+            importDropdown.addEventListener('click', function() {
+                importOptions.style.display = importOptions.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            document.getElementById('import-svg').addEventListener('click', function() {
+                importSVG();
+                importOptions.style.display = 'none';
+            });
+            
+            document.getElementById('import-image-colors').addEventListener('click', function() {
+                extractColorsFromImage();
+                importOptions.style.display = 'none';
+            });
+            
+            document.getElementById('import-psd').addEventListener('click', function() {
+                alert('Sokongan fail PSD akan datang dalam versi akan datang.');
+                importOptions.style.display = 'none';
+            });
+            
+            // Mod Presentasi
+            const presentationDropdown = document.getElementById('presentation-dropdown');
+            const presentationOptions = document.getElementById('presentation-options');
+            
+            presentationDropdown.addEventListener('click', function() {
+                presentationOptions.style.display = presentationOptions.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            document.getElementById('presentation-start').addEventListener('click', function() {
+                startRecording();
+                presentationOptions.style.display = 'none';
+            });
+            
+            document.getElementById('presentation-playback').addEventListener('click', function() {
+                playbackRecording();
+                presentationOptions.style.display = 'none';
+            });
+            
+            document.getElementById('presentation-slideshow').addEventListener('click', function() {
+                startSlideshow();
+                presentationOptions.style.display = 'none';
+            });
+            
+            // Sembunyikan semua dropdown apabila klik di luar
+            window.addEventListener('click', function(e) {
+                if (!e.target.matches('#export-dropdown') && !e.target.matches('#template-dropdown') && 
+                    !e.target.matches('#import-dropdown') && !e.target.matches('#presentation-dropdown')) {
+                    exportOptions.style.display = 'none';
+                    templateOptions.style.display = 'none';
+                    importOptions.style.display = 'none';
+                    presentationOptions.style.display = 'none';
+                }
+            });
+            
+            // Kawalan alat
+            colorPicker.addEventListener('input', function() {
+                currentColor = this.value;
+                updateColorPresets();
+            });
+            
+            document.querySelectorAll('.color-preset').forEach(preset => {
+                preset.addEventListener('click', function() {
+                    currentColor = this.dataset.color;
+                    colorPicker.value = currentColor;
+                    updateColorPresets();
+                });
+            });
+            
+            sizeSlider.addEventListener('input', function() {
+                lineWidth = this.value;
+                sizeDisplay.textContent = this.value + 'px';
+            });
+            
+            opacitySlider.addEventListener('input', function() {
+                currentOpacity = this.value / 100;
+                opacityDisplay.textContent = this.value + '%';
+            });
+            
+            brushTool.addEventListener('click', () => setActiveTool('brush'));
+            eraserTool.addEventListener('click', () => setActiveTool('eraser'));
+            eyedropperTool.addEventListener('click', () => setActiveTool('eyedropper'));
+            fillTool.addEventListener('click', () => setActiveTool('fill'));
+            textTool.addEventListener('click', () => setActiveTool('text'));
+            lineTool.addEventListener('click', () => setActiveTool('line'));
+            rectangleTool.addEventListener('click', () => setActiveTool('rectangle'));
+            circleTool.addEventListener('click', () => setActiveTool('circle'));
+            triangleTool.addEventListener('click', () => setActiveTool('triangle'));
+            
+            // Pendengar untuk jenis berus
+            brushNormal.addEventListener('click', () => setActiveBrush('normal'));
+            brushSquare.addEventListener('click', () => setActiveBrush('square'));
+            brushSoft.addEventListener('click', () => setActiveBrush('soft'));
+            brushSpray.addEventListener('click', () => setActiveBrush('spray'));
+            
+            // Kawalan sejarah
+            undoButton.addEventListener('click', undo);
+            redoButton.addEventListener('click', redo);
+            
+            // Kawalan lain
+            clearButton.addEventListener('click', clearCanvas);
+            saveButton.addEventListener('click', saveImage);
+            
+            // Pendengar acara tema
+            themeToggle.addEventListener('click', toggleGrid);
+            
+            // Kawalan grid
+            gridToggle.addEventListener('click', toggleGrid);
+            
+            // Latar belakang
+            bgPresets.forEach(preset => {
+                preset.addEventListener('click', function() {
+                    bgPresets.forEach(p => p.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    backgroundColor = this.dataset.bg;
+                    drawBackground();
+                });
+            });
+            
+            uploadBgButton.addEventListener('click', function() {
+                bgUpload.click();
+            });
+            
+            bgUpload.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    setBackgroundFromUpload(this.files[0]);
+                    
+                    // Buang kelas aktif dari semua pra-tetap
+                    bgPresets.forEach(p => p.classList.remove('active'));
+                }
+            });
+            
+            // Penapis
+            filterItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    filterItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Dapatkan nama penapis dari teks
+                    const filterName = this.querySelector('span').textContent.toLowerCase();
+                    applyFilter(filterName);
+                });
+            });
+            
+            // Dropdown eksport
+            exportDropdown.addEventListener('click', function() {
+                exportOptions.style.display = exportOptions.style.display === 'block' ? 'none' : 'block';
+            });
+            
+            // Sembunyikan dropdown apabila klik di luar
+            window.addEventListener('click', function(e) {
+                if (!e.target.matches('#export-dropdown')) {
+                    exportOptions.style.display = 'none';
+                }
+            });
+            
+            // Pilihan eksport
+            document.getElementById('export-png').addEventListener('click', function() {
+                exportImage('png');
+                exportOptions.style.display = 'none';
+            });
+            
+            document.getElementById('export-jpeg').addEventListener('click', function() {
+                exportImage('jpeg');
+                exportOptions.style.display = 'none';
+            });
+            
+            document.getElementById('export-svg').addEventListener('click', function() {
+                exportImage('svg');
+                exportOptions.style.display = 'none';
+            });
+            
+            // Nyahaktifkan gulungan pada sentuhan
+            document.body.addEventListener('touchmove', function(e) {
+                if (e.target === drawingCanvas) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            
+            // Tetapkan keadaan awal UI 
+            updateUndoRedoButtons();
+        });
+    </script>
+</body>
+</html>
